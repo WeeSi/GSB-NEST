@@ -1,28 +1,33 @@
-import { FactureDto } from '../model/facture.dto';
-import { Facture } from '../facture.entity';
+import { UserDto } from 'src/user/model/user.dto';
 import { Converter } from '../../common/converter';
+import { Facture } from './../facture.entity';
+import { FactureDto} from './../model/facture.dto';
 
-export class FactureDtoConverter implements Converter<FactureDto, Facture>{
-    // tslint:disable-next-line: no-empty
+export class FactureDtoConverter implements Converter<FactureDto, Facture> {
+
     constructor() {}
 
-    convertOutbound(facture: Facture): FactureDto {
-        // tslint:disable-next-line: no-shadowed-variable
-        const FactureDto: FactureDto = {
+    convertInbound(facture: FactureDto): Facture {
+        return {
             id: facture.id,
-            date: facture.date,
-            prix_hotel: facture.prix_hotel,
-            prix_repas: facture.prix_repas,
-            prix_transport: facture.prix_transport,
-            nombre_kilometre: facture.nombre_kilometre,
-            description: facture.description
+            commercialId : facture.commercialId.id,
+            doctor : facture.doctor.id,
+            orders:facture.orders,
+            date : facture.date
         };
-
-        return FactureDto;
     }
 
-    // tslint:disable-next-line: no-shadowed-variable
-    convertOutboundCollection(Facture: Facture[]): FactureDto[] {
-        return Facture.map((facture) => this.convertOutbound(facture));
+    convertOutbound(facture: Facture): FactureDto {
+        return {
+            id: facture.id,
+            commercialId: facture.commercialId as Partial<UserDto>,
+            doctor: facture.doctor as Partial<UserDto>,
+            date: facture.date,
+            orders : facture.orders
+        };
+    }
+
+    convertOutboundCollection(facture: Facture[]): FactureDto[] {
+        return facture.map((m) => this.convertOutbound(m));
     }
 }

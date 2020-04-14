@@ -1,7 +1,8 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, IsEmail } from 'class-validator';
+import { IsNumber, IsString, IsEmail, IsJSON } from 'class-validator';
 import { GenderEnum } from '../../common/gender.enum';
 import { RoleEnum } from '../../common/role.enum';
+import { MedicamentDto } from '../../medicament/model/medicament.dto'
 
 export class UserDto {
     @ApiModelProperty()
@@ -36,6 +37,7 @@ export class UserDto {
     @IsString()
     gender: string;
 
-    @ApiModelProperty({type: Number, isArray: true, required: false})
-    doctors?: number[];
+    @ApiModelProperty({ type: MedicamentDto, isArray: true})
+    @IsJSON()
+    medicines: MedicamentDto[];
 }

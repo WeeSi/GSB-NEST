@@ -15,6 +15,7 @@ export class createMedicamentDtoConverter implements Converter<CreateMedicamentD
             nom: medicament.nom,
             description: medicament.description,
             img: medicament.img,
+            prix:medicament.prix,
         };
 
         return medicamentToCreate;

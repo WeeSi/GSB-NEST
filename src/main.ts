@@ -12,11 +12,10 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   //Autorise les requêtes cross domaine (de localhost:4200 à localhost:3000)
-  app.enableCors({ origin: 'http://localhost:4200' });
+  app.enableCors({ origin: ['http://localhost:4200', 'http://localhost:8100'] });
 
   //Définit un préfixe pour toutes les routes (/api)
   app.setGlobalPrefix(configService.apiBasePath);
-
 
   //Initialise et configure le swagger
   const swaggerOptions = new DocumentBuilder()

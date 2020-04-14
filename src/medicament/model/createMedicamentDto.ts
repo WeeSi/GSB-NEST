@@ -1,5 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsEmail, IsEnum, IsOptional, IsString, IsNumber, IsNumberString } from 'class-validator';
 
 export class CreateMedicamentDto {
 
@@ -12,6 +12,15 @@ export class CreateMedicamentDto {
     description: string;
 
     @ApiModelProperty()
+    @IsNumber()
+    prix: number;
+
+    @ApiModelProperty()
     @IsString()
     img: string;
+
+    @ApiModelProperty()
+    @IsNumber()
+    commercial: number;
+
 }

@@ -1,5 +1,6 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, IsBoolean, IsJSON } from 'class-validator';
 import { ApiModelProperty } from '@nestjs/swagger';
+import { UserDto } from 'src/user/model/user.dto';
 
 // tslint:disable-next-line: class-name
 export class FactureDto {
@@ -9,30 +10,18 @@ export class FactureDto {
     id: number;
 
     @ApiModelProperty()
-    @IsNumber()
-    prix_repas: number;
-
-    @ApiModelProperty()
-    @IsNumber()
-    prix_hotel: number;
-
-    @ApiModelProperty()
-    @IsNumber()
-    prix_transport: number;
-
-    @ApiModelProperty()
-    @IsNumber()
-    nombre_kilometre: number;
+    @IsJSON()
+    orders: number;
 
     @ApiModelProperty()
     @IsString()
     date: string;
 
-    @ApiModelProperty()
-    @IsString()
-    description: string;
+    @ApiModelProperty({type: UserDto})
+    @IsNumber()
+    doctor: Partial<UserDto>;
 
-    // @ApiModelProperty
-    // @IsNumber()
-    // doctorId = '';
+    @ApiModelProperty({type: UserDto})
+    @IsNumber()
+    commercialId: Partial<UserDto>;
 }

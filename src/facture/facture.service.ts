@@ -34,7 +34,7 @@ export class FactureService {
         const result: UpdateResult = await this.factureRepository.update(id, facture);
 
         if (result.raw.affectedRows <= 0) {
-            throw new NotFoundException('Ce médicament n\'existe pas.');
+            throw new NotFoundException('Cette facture n\'existe pas.');
         }
         return await this.getFactureById(id);
     }
@@ -42,7 +42,7 @@ export class FactureService {
     async deleteFacture(id: number): Promise<void> {
         const facture: Facture | undefined = await this.getFactureById(id);
         if (!facture) {
-            throw new NotFoundException('Ce médicament n\'existe pas.');
+            throw new NotFoundException('Cette facture n\'existe pas.');
         }
         await this.factureRepository.delete(facture.id);
     }

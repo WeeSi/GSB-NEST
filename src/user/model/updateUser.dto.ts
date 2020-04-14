@@ -27,7 +27,8 @@ export class UpdateUserDto {
     @IsOptional()
     address?: string;
 
-    @ApiModelProperty()
+    @ApiModelProperty({required: false})
     @IsString()
+    @IsOptional()
     image?: string;
 }

@@ -5,12 +5,12 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { configService } from './config/config.module';
-import { DoctorModule } from './doctor/doctor.module';
 import { MedicamentModule } from './medicament/medicament.module';
-import { PatientModule } from './patient/patients.module';
 import { UserModule } from './user/user.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { FactureModule } from './facture/facture.module';
+import { MeetingModule } from './meeting/meeting.module';
+import { OrderModule } from './order/order.module';
 
 const typeOrmConfig: MysqlConnectionOptions = {
       type: 'mysql',
@@ -32,10 +32,10 @@ const typeOrmConfig: MysqlConnectionOptions = {
     }),
     AuthModule,
     UserModule,
-    PatientModule,
-    DoctorModule,
     MedicamentModule,
-    FactureModule
+    FactureModule,
+    MeetingModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,7 +1,10 @@
 import { IsNumber, IsString } from 'class-validator';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import { GenderEnum } from '../common/gender.enum';
 import { RoleEnum } from '../common/role.enum';
+import { Medicament } from '../medicament/medicament.entity';
+import { Meeting } from 'src/meeting/meeting.entity';
+
 @Entity()
 export class User {
 
@@ -41,8 +44,9 @@ export class User {
     @IsNumber()
     gender = GenderEnum.Male;
 
-    @ManyToMany(type => User, {cascade: ['remove', 'insert', 'update'], nullable: true})
-    @JoinTable({name: 'doctorIds', joinColumn: {name: 'id'}})
-    @Column({type: 'json', nullable: true})
-    doctors?: User[];
+    @OneToMany(() => Medicament, (medicine) => medicine.id)
+    @JoinTable({name: 'medicineIds', joinColumn: {name: 'id'}})
+    @Column({type: 'json'})
+    medicines ?: Medicament[];
+
 }

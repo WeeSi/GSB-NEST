@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult, In } from 'typeorm';
 import { User } from './user.entity';
 import { RoleEnum } from '../common/role.enum';
+
 
 @Injectable()
 export class UserService {
@@ -12,14 +13,12 @@ export class UserService {
 
     async getUsers(): Promise<User[]> {
         return await this.usersRepository.find({
-            relations: ['doctors'],
         });
     }
 
     async getUserById(id: number): Promise<User> {
         const user: User | undefined = await this.usersRepository.findOne({
             where: [{ id }],
-            relations: ['doctors'],
         });
 
         if (!user) {
@@ -31,7 +30,6 @@ export class UserService {
     async getUserByMail(email: string): Promise<User> {
         return await this.usersRepository.findOne({
             where: [{ email }],
-            relations: ['doctors'],
         });
     }
 
@@ -110,12 +108,12 @@ export class UserService {
     }
 
     async getCommercialFromId(userId: number): Promise<User> {
-        const patient: User = await this.getUserById(userId);
-        const isUserPatient: boolean = patient.role === RoleEnum.Commercial;
-        if (!isUserPatient) {
-            throw new ForbiddenException('Cet utilisateur n\'a pas le rôle patient.');
+        const commercial: User = await this.getUserById(userId);
+        const isUserCommercial: boolean = commercial.role === RoleEnum.Commercial;
+        if (!isUserCommercial) {
+            throw new ForbiddenException('Cet utilisateur n\'a pas le rôle commercial.');
         }
-        return patient;
+        return commercial;
     }
 
     async getDoctorFromId(userId: number): Promise<User> {
@@ -127,40 +125,4 @@ export class UserService {
         return doctor;
     }
 
-    private userTokenIdMatchcommercialId(userTokenId: number, commercialId: number): void {
-        if (userTokenId !== commercialId) {
-            throw new UnauthorizedException('Le token de cet utilisateur ne correspond pas à un commercial.');
-        }
-    }
-
-    async addDoctorToPatient(userTokenId: number, commercialId: number, doctorId: number): Promise<User> {
-        this.userTokenIdMatchcommercialId(userTokenId, commercialId);
-        const patient: User = await this.getCommercialFromId(commercialId);
-        const doctor: User = await this.getDoctorFromId(doctorId);
-        if (patient.doctors.find(d => d.id === doctor.id)) {
-            throw new ForbiddenException('Ce médecin est déjà attaché à ce commercial.');
-        }
-
-        patient.doctors = patient.doctors.concat(doctor);
-        return await this.usersRepository.save(patient);
-    }
-
-    async removeDoctorToPatient(userTokenId: number, commercialId: number, doctorId: number): Promise<User> {
-        this.userTokenIdMatchcommercialId(userTokenId, commercialId);
-        const commercial : User = await this.getCommercialFromId(commercialId);
-        const doctor: User = await this.getDoctorFromId(doctorId);
-
-        if (!commercial.doctors.find(d => d.id === doctor.id)) {
-            throw new ForbiddenException('Ce médecin n\'est pas attaché à ce patient.');
-        }
-
-        commercial.doctors = commercial.doctors.filter(d => d.id !== doctor.id);
-        return await this.usersRepository.save(commercial);
-    }
-
-    async getAllDoctorPatients(doctorTokenId: number): Promise<User[]> {
-        await this.getDoctorFromId(doctorTokenId);
-        const patients: User[] = await this.getCommercials();
-        return patients.filter((p) => p.doctors.find(d => d.id === doctorTokenId));
-    }
 }

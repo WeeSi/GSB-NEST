@@ -9,11 +9,6 @@ import { UserDtoConverter } from '../user/converter/userDto.converter';
 import { CreateUserDtoConverter } from '../user/converter/createUserDto.converter';
 import { CreateUserDto } from '../user/model/createUser.dto';
 import { User } from '../user/user.entity';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
-import { editFileName } from '../utils/file-upload.utils';
-import { imageFileFilter } from '../utils/file-upload.utils';
 
 
 /**
@@ -62,15 +57,16 @@ export class AuthController {
      * @param {CreateUserDto} user objet qui contient les informations de l'utilisateur a créer
      * @returns {UserDto} objet qui contient les informations de l'utilisateur qui a été créé
      */
+
     @Put('signup')
     @ApiImplicitBody({name: 'CreateUserDto', description: 'User to create', type: CreateUserDto})
     @ApiResponse({status: 201, description: 'User created', type: UserDto})
     async signup(@Body() user: CreateUserDto): Promise<UserDto> {
-        // On convertie l'utilisateur de type CreateUserDto en Partial<User>
-        const userToCreate: Partial<User> = this.createUserDtoConverter.convertInbound(user);
-        // On crée l'utilisateur en base
+        //On convertie l'utilisateur de type CreateUserDto en Partial<User>
+        const userToCreate: Partial<User> = this.createUserDtoConverter.convertInbound(user)
+        //On crée l'utilisateur en base
         const userCreated: User = await this.userService.createUser(userToCreate);
-        // On retourne l'utilisateur créé convertie au format UserDto
+        //On retourne l'utilisateur créé convertie au format UserDto
         return this.userDtoConverter.convertOutbound(userCreated);
     }
 

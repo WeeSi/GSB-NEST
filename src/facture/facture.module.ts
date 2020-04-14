@@ -4,9 +4,8 @@ import { FactureService } from './facture.service';
 import { FactureDtoConverter } from './converter/factureDto.converter';
 import { Facture } from './facture.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { FactureDto } from './model/facture.dto';
-import { CreateFactureDto } from './model/createFactureDto';
-import { createFactureDtoConverter } from './converter/createFactureDto.converter';
+import { CreateFactureDtoConverter } from './converter/createFactureDto.converter';
+import { updateFactureDtoConverter } from './converter/updateFactureDto.converter';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Facture])],
@@ -14,12 +13,13 @@ import { createFactureDtoConverter } from './converter/createFactureDto.converte
   providers: [
     FactureService,
     FactureDtoConverter,
-    createFactureDtoConverter,
+    CreateFactureDtoConverter,
+    updateFactureDtoConverter
 ],
 exports: [
     FactureService,
     FactureDtoConverter,
-    createFactureDtoConverter,
+    CreateFactureDtoConverter,
   ],
 })
 export class FactureModule {}

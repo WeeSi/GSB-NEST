@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsString, IsNumberString } from 'class-validator';
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 
@@ -21,7 +21,8 @@ export class Medicament {
     @IsString()
     img = '';
 
-    // @Column({ type: Number })
-    // @IsNumber()
-    // vendeur = '';
+    @Column({type: Number})
+    @IsNumber()
+    prix:number;
+
 }

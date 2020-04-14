@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, ParseIntPipe, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiImplicitBody, ApiImplicitParam, ApiResponse, ApiUseTags } from '@nestjs/swagger';
+import { ApiImplicitBody, ApiImplicitParam, ApiResponse, ApiUseTags, ApiImplicitQuery } from '@nestjs/swagger';
 import { UserDtoConverter } from './converter/userDto.converter';
 import { UserDto } from './model/user.dto';
 import { User } from './user.entity';
@@ -112,4 +112,6 @@ export class UserController {
     async deleteUser(@Param('id', new ParseIntPipe()) id: number): Promise<void> {
         return await this.service.deleteUser(id);
     }
+
+
 }

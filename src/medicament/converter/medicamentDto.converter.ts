@@ -13,6 +13,7 @@ export class MedicamentDtoConverter implements Converter<MedicamentDto, Medicame
             nom: medicament.nom,
             description: medicament.description,
             img: medicament.img,
+            prix: medicament.prix,
         };
 
         return MedicamentDto;

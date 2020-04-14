@@ -4,25 +4,35 @@ import { Converter } from '../../common/converter';
 import { RoleEnum } from '../../common/role.enum';
 import { GenderEnum } from '../../common/gender.enum';
 
-export class UserDtoConverter implements Converter<UserDto, User>{
-    // tslint:disable-next-line: no-empty
+export class UserDtoConverter implements Converter<UserDto, Partial<User>> {
     constructor() {}
 
-    convertOutbound(user: User): UserDto {
-        const userDto: UserDto = {
+    convertInbound(user: UserDto): Partial<User> {
+        return {
             id: user.id,
             address: user.address,
             email: user.email,
-            image:user.image,
             firstName: user.firstName,
             lastName: user.lastName,
             gender: GenderEnum[user.gender],
             role: RoleEnum[user.role],
+            medicines: user.medicines,
+            image:user.image
         };
+    }
 
-        if (user.role === RoleEnum.Commercial) {
-            userDto['doctors'] = user.doctors.map(d => d.id);
-        }
+    convertOutbound(user: Partial<User>): UserDto {
+        const userDto: UserDto = {
+            id: user.id,
+            address: user.address,
+            email: user.email,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            gender: GenderEnum[user.gender],
+            role: RoleEnum[user.role],
+            medicines: user.medicines,
+            image:user.image
+        };
 
         return userDto;
     }

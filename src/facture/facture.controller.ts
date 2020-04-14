@@ -6,7 +6,9 @@ import { FactureService } from './facture.service';
 import { FactureDto } from './model/facture.dto';
 import { FactureDtoConverter } from './converter/factureDto.converter';
 import { CreateFactureDto } from './model/createFactureDto';
-import { createFactureDtoConverter } from './converter/createFactureDto.converter';
+import { CreateFactureDtoConverter } from './converter/createFactureDto.converter';
+import { updateFactureDtoConverter } from './converter/updateFactureDto.converter';
+import { UpdateFactureDto } from './model/updateFacture.dto';
 
 @ApiUseTags('factures')
 @Controller('factures')
@@ -16,7 +18,8 @@ export class FactureController {
                  // tslint:disable-next-line: no-shadowed-variable
                  private readonly FactureDtoConverter: FactureDtoConverter,
                  // tslint:disable-next-line: no-shadowed-variable
-                 private readonly createFactureDtoConverter: createFactureDtoConverter) {}
+                 private readonly createFactureDtoConverter: CreateFactureDtoConverter,
+                 private readonly updateFactureDtoConverter: updateFactureDtoConverter) {}
 
     @Get('')
     @ApiResponse({ status: 201, description: 'All factures', type: FactureDto, isArray: true})
@@ -42,9 +45,22 @@ export class FactureController {
     @ApiResponse({ status: 201, description: 'Facture found', type: FactureDto})
     @ApiResponse({ status: 401, description: 'Facture not Error!'})
     async create(@Body() medicament: CreateFactureDto): Promise<FactureDto> {
-        const medicamentToCreate: Partial<FactureDto> = this.createFactureDtoConverter.convertInbound(medicament);
-        const createFacture: Facture = await this.service.createFacture(medicamentToCreate);
+        const factureToCreate: Partial<Facture> = this.createFactureDtoConverter.convertInbound(medicament);
+        const createFacture: Facture = await this.service.createFacture(factureToCreate);
         return this.FactureDtoConverter.convertOutbound(createFacture);
+    }
+
+    @UseGuards(AuthGuard('auth'))
+    @Post(':id')
+    @ApiImplicitParam({name: 'id', description: 'Facture id to update', required: true, type: Number})
+    @ApiImplicitBody({name: 'UpdateFactureDto', description: 'Facture information to update', type: UpdateFactureDto})
+    @ApiResponse({ status: 201, description: 'Facture updated', type: FactureDto})
+    @ApiResponse({ status: 401, description: 'Facture not authentificated'})
+    @ApiResponse({ status: 404, description: 'Facture not found'})
+    async update(@Param('id', new ParseIntPipe()) id: number, @Body() Facture: UpdateFactureDto): Promise<FactureDto> {
+        const FactureToUpdate: Partial<Facture> = this.updateFactureDtoConverter.convertInbound(Facture);
+        const FactureUpdated: Facture = await this.service.updateFacture(id, FactureToUpdate);
+        return this.FactureDtoConverter.convertOutbound(FactureUpdated);
     }
     
     @UseGuards(AuthGuard('auth'))

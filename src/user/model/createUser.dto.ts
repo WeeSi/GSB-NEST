@@ -26,9 +26,10 @@ export class CreateUserDto {
     @IsString()
     address: string;
 
-    @ApiModelProperty()
+    @ApiModelProperty({required:false})
     @IsString()
-    image: string;
+    @IsOptional()
+    image?: string;
 
     @ApiModelProperty({enum: Object.keys(RoleEnum).filter((v) => isNaN(+v))})
     @IsEnum(Object.keys(RoleEnum).filter((v) => isNaN(+v)))

@@ -1,15 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Medicament } from './medicament.entity';
 import { Repository, UpdateResult } from 'typeorm';
+import { Like } from "typeorm";
 
 @Injectable()
 export class MedicamentService {
 
     constructor(@InjectRepository(Medicament) private medicamentRepository: Repository<Medicament>) { }
 
-    async getMedicaments(): Promise<Medicament[]> {
-        return await this.medicamentRepository.find();
+    async getMedicaments(pageIndex:number,pageSize:number,search:string): Promise<[Medicament[], number]>  {
+        return await this.medicamentRepository.findAndCount({
+            where: [
+                { nom: Like(`%${search}%`) },
+                { description: Like(`%${search}%`) },
+            ],
+            skip: pageIndex * pageSize,
+            take: pageSize,
+        });
+    }
+
+    async getMedicamentByName(nom: string): Promise<Medicament> {
+        return await this.medicamentRepository.findOne({
+            where: [{ nom }],
+        });
+    }
+
+    async nameExists(nom: string): Promise<boolean> {
+        return !!await this.getMedicamentByName(nom);
     }
 
     async getMedicamentsById(id: number): Promise<Medicament> {
@@ -24,7 +42,18 @@ export class MedicamentService {
         return Medicament;
     }
 
+    async getMedicamentsByIdCom(id: number): Promise<Medicament[]> {
+        return await this.medicamentRepository.find({
+            where : [{commercial : id}]
+        })
+    }
+
     async createMedicament(medicament: Partial<Medicament>): Promise<Medicament> {
+
+        const nameExists = await this.nameExists(medicament.nom);
+        if (nameExists) {
+            throw new ForbiddenException('Ce médicament existe déjà.');
+        }
         const medicamentCreated: Medicament = this.medicamentRepository.create(medicament);
         return this.medicamentRepository.save(medicamentCreated);
     }

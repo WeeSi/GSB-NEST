@@ -1,7 +1,9 @@
 /**
  * Enum qui définit le Role d'un utilisateur
- * Patient
- * Médecin
+ * Admin
+ * Doctor
+ * Comptable
+ * Commercial
  */
 export enum RoleEnum {
     Admin,
