@@ -28,9 +28,9 @@ export class UserDto {
     @ApiModelProperty()
     @IsString()
     image: string;
-
+     
     @ApiModelProperty({enum: Object.keys(RoleEnum).filter((v) => isNaN(+v))})
-    @IsString()
+    @IsString()     
     role: string;
 
     @ApiModelProperty({enum: Object.keys(GenderEnum).filter((v) => isNaN(+v))})

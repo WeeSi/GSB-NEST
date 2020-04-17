@@ -3,7 +3,6 @@ import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, OneToMan
 import { GenderEnum } from '../common/gender.enum';
 import { RoleEnum } from '../common/role.enum';
 import { Medicament } from '../medicament/medicament.entity';
-import { Meeting } from 'src/meeting/meeting.entity';
 
 @Entity()
 export class User {

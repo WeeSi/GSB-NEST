@@ -40,6 +40,17 @@ export class FactureController {
         return this.FactureDtoConverter.convertOutbound(facture);
     }
 
+    @UseGuards(AuthGuard('auth'))
+    @Get('doctor/:id')
+    @ApiImplicitParam({name: 'id', description: 'Facture from doctorId to retrieve', required: true, type: Number})
+    @ApiResponse({ status: 201, description: 'Facture found', type: FactureDto})
+    @ApiResponse({ status: 401, description: 'Facture not Error!'})
+    @ApiResponse({ status: 404, description: 'Facture not found'})
+    async getFacturesByDoctor(@Param('id', new ParseIntPipe()) id: number): Promise<FactureDto[]> {
+        const factures: Facture[] = await this.service.getFacturesFromDoctor(id);
+        return this.FactureDtoConverter.convertOutboundCollection(factures);
+    }
+
     @Put()
     @ApiImplicitBody({name: 'CreateFactureDto', description: 'Facture to create', type: CreateFactureDto})
     @ApiResponse({ status: 201, description: 'Facture found', type: FactureDto})

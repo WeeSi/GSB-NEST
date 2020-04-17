@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcryptjs';
-import { Repository, UpdateResult, In } from 'typeorm';
+import { Repository, UpdateResult, In, Like } from 'typeorm';
 import { User } from './user.entity';
 import { RoleEnum } from '../common/role.enum';
 
@@ -11,11 +11,21 @@ export class UserService {
 
     constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
-    async getUsers(): Promise<User[]> {
-        return await this.usersRepository.find({
-        });
+    async getUsers(name:string,lastname:string,email:string,role:number): Promise<User[]> {
+        if(role == -1){
+            return await this.usersRepository.find({
+                where : [
+                    {firstName : Like(`%${name}%`), lastName : Like(`%${lastname}%`) , email : Like(`%${email}%`)}
+                ]
+            });
+        }else{
+            return await this.usersRepository.find({
+                where : [
+                    {firstName : Like(`%${name}%`),lastName : Like(`%${lastname}%`),  email : Like(`%${email}%`),  role: role}
+                ]
+            });
+        }
     }
-
     async getUserById(id: number): Promise<User> {
         const user: User | undefined = await this.usersRepository.findOne({
             where: [{ id }],
@@ -29,7 +39,7 @@ export class UserService {
 
     async getUserByMail(email: string): Promise<User> {
         return await this.usersRepository.findOne({
-            where: [{ email }],
+            where: [{ email }]
         });
     }
 

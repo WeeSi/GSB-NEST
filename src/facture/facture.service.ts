@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Facture } from './facture.entity';
 import { Repository, UpdateResult } from 'typeorm';
+import { FactureDto } from './model/facture.dto';
 
 @Injectable()
 export class FactureService {
@@ -22,6 +23,12 @@ export class FactureService {
             throw new NotFoundException('Cet utilisateur n\'existe pas');
         }
         return Facture;
+    }
+
+    async getFacturesFromDoctor(id:number): Promise<Facture[]>{
+        return this.factureRepository.find({
+            where : [{doctor : id}]
+        });
     }
 
     async createFacture(facture: Partial<Facture>): Promise<Facture> {

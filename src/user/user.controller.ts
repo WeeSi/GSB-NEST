@@ -23,10 +23,19 @@ export class UserController {
 
     @UseGuards(AuthGuard('auth'))
     @Get('')
+    @ApiImplicitQuery({ name: 'name', type: String, description: 'Name to retrieve' })
+    @ApiImplicitQuery({ name: 'lastname', type: String, description: 'Lastname to retrieve' })
+    @ApiImplicitQuery({ name: 'email', type: String, description: 'Email to retrieve' })
+    @ApiImplicitQuery({ name: 'role', type: Number, description: 'role to retrieve' })
     @ApiResponse({ status: 201, description: 'All users', type: UserDto, isArray: true})
     @ApiResponse({ status: 401, description: 'User not authentificated'})
-    async getAll(): Promise<UserDto[]> {
-        const users: User[] = await this.service.getUsers();
+    async getAll(
+        @Query('name') name: string,
+        @Query('lastname') lastname: string,
+        @Query('email') email: string,
+        @Query('role', new ParseIntPipe()) role: number,
+    ): Promise<UserDto[]> {
+        const users = await this.service.getUsers(name, email, lastname, role);
         return this.userDtoConverter.convertOutboundCollection(users);
     }
 
@@ -112,6 +121,4 @@ export class UserController {
     async deleteUser(@Param('id', new ParseIntPipe()) id: number): Promise<void> {
         return await this.service.deleteUser(id);
     }
-
-
 }
