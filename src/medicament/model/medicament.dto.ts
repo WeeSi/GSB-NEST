@@ -17,6 +17,10 @@ export class MedicamentDto {
 
     @ApiModelProperty()
     @IsString()
+    categorie: string;
+
+    @ApiModelProperty()
+    @IsString()
     img: string;
 
     @ApiModelProperty()

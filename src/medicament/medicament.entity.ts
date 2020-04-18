@@ -15,6 +15,10 @@ export class Medicament {
 
     @Column({ type: String })
     @IsString()
+    categorie = '';
+
+    @Column({ type: String })
+    @IsString()
     description = '';
 
     @Column({ type: String })

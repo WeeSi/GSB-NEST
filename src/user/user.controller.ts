@@ -49,10 +49,19 @@ export class UserController {
 
     @UseGuards(AuthGuard('auth'))
     @Get('commercials')
+    @ApiImplicitQuery({ name: 'firstname', type: String, description: 'Name to retrieve' })
+    @ApiImplicitQuery({ name: 'lastname', type: String, description: 'Lastname to retrieve' })
+    @ApiImplicitQuery({ name: 'email', type: String, description: 'Email to retrieve' })
+    @ApiImplicitQuery({ name: 'adresse', type: String, description: 'role to retrieve' })
     @ApiResponse({ status: 201, description: 'commercials found', type: UserDto, isArray: true})
     @ApiResponse({ status: 401, description: 'User not authentificated'})
-    async getcommercials(): Promise<UserDto[]> {
-        const commercials: User[] = await this.service.getCommercials();
+    async getcommercials(
+        @Query('firstname') firstname: string,
+        @Query('lastname') lastname: string,
+        @Query('email') email: string,
+        @Query('adresse') adresse: string,
+    ): Promise<UserDto[]> {
+        const commercials: User[] = await this.service.getCommercials(firstname, lastname, email, adresse);
         return this.userDtoConverter.convertOutboundCollection(commercials);
     }
 

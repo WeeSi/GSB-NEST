@@ -15,6 +15,11 @@ export class UpdateMedicamentDto {
     @ApiModelProperty({required: false})
     @IsString()
     @IsOptional()
+    categorie?: string;
+
+    @ApiModelProperty({required: false})
+    @IsString()
+    @IsOptional()
     nom?: string;
 
     @ApiModelProperty({required: false})

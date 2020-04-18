@@ -9,7 +9,7 @@ export class Order {
     @IsNumber()
     id: number;
 
-    @OneToOne(() => Medicament, (medicament) => medicament.id)
+    @ManyToMany(() => Medicament, (medicament) => medicament.id)
     @JoinColumn()
     medicine:number;
 

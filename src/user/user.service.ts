@@ -105,9 +105,17 @@ export class UserService {
         await this.usersRepository.delete(user.id);
     }
 
-    async getCommercials(): Promise<User[]> {
+    async getCommercials(firstName:string, lastName:string, email:string, adresse:string): Promise<User[]> {
         return await this.usersRepository.find({
-            where: [{ role: RoleEnum.Commercial }],
+            where: [
+                { 
+                    role: RoleEnum.Commercial, 
+                    firstName : Like(`%${firstName}%`), 
+                    lastName : Like(`%${lastName}%`), 
+                    email : Like(`%${email}%`), 
+                    address : Like(`%${adresse}%`) 
+                }
+            ],
         });
     }
 

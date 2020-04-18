@@ -17,6 +17,14 @@ export class MeetingService {
         return meeting;
     }
 
+    async deleteMeeting(id:number): Promise<void>{
+        const meeting: Meeting | undefined = await this.findOneById(id);
+        if (!meeting) {
+            throw new NotFoundException('Ce rendez-vous n\'existe pas.');
+        }
+        await this.meetingsRepository.delete(meeting.id);
+    }
+
     async findOneByIdWithRelations(id: number): Promise<Meeting> {
         return this.meetingsRepository.findOne({
             where: { id },
