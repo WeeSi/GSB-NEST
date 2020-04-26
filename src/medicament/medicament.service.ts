@@ -3,22 +3,44 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Medicament } from './medicament.entity';
 import { Repository, UpdateResult } from 'typeorm';
 import { Like } from "typeorm";
+import { GroupOptions } from 'typeorm';
 
 @Injectable()
 export class MedicamentService {
 
     constructor(@InjectRepository(Medicament) private medicamentRepository: Repository<Medicament>) { }
 
-    async getMedicaments(pageIndex:number,pageSize:number,search:string): Promise<[Medicament[], number]>  {
-        return await this.medicamentRepository.findAndCount({
-            where: [
-                { nom: Like(`%${search}%`) },
-                { description: Like(`%${search}%`) },
-            ],
-            skip: pageIndex * pageSize,
-            take: pageSize,
-        });
+    async getMedicaments(pageIndex:number,pageSize:number,search:string, categorie:string, commercial : number): Promise<[Medicament[], number]>  {
+
+        var queryCateg:any;
+        if(categorie == "Tout") {
+             categorie = "";
+             queryCateg = Like(`%${categorie}%`);
+            }
+        else 
+             queryCateg = categorie;
+
+        if(commercial != -1 ){
+            return await this.medicamentRepository.findAndCount({
+                where: [
+                    { nom: Like(`%${search}%`),commercialID : commercial,categorie : queryCateg  },
+                ],
+                skip: pageIndex * pageSize,
+                take: pageSize,
+            });
+        }else{
+            return await this.medicamentRepository.findAndCount({
+                where: [
+                    { nom: Like(`%${search}%`),categorie : queryCateg},
+                ],
+                skip: pageIndex * pageSize,
+                take: pageSize,
+            });
+        }
+        
     }
+            
+        
 
     async getMedicamentByName(nom: string): Promise<Medicament> {
         return await this.medicamentRepository.findOne({
@@ -42,10 +64,14 @@ export class MedicamentService {
         return Medicament;
     }
 
-    async getMedicamentsByIdCom(id: number): Promise<Medicament[]> {
+    async getMedicamentsByIdCom(id: number, medicineName, medicineCategorie): Promise<Medicament[]> {
         return await this.medicamentRepository.find({
-            where : [{commercial : id}]
+            where : [{commercialID : id, nom : medicineName, categorie : medicineCategorie}]
         })
+    }
+
+    async getCategories(): Promise<Medicament[]> {
+        return await this.medicamentRepository.query('select categorie from test.medicament group by categorie ');
     }
 
     async createMedicament(medicament: Partial<Medicament>): Promise<Medicament> {

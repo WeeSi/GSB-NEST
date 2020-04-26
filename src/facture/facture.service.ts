@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Facture } from './facture.entity';
-import { Repository, UpdateResult } from 'typeorm';
+import { Repository, UpdateResult, Like } from 'typeorm';
 import { FactureDto } from './model/facture.dto';
 
 @Injectable()
@@ -9,14 +9,35 @@ export class FactureService {
 
     constructor(@InjectRepository(Facture) private factureRepository: Repository<Facture>) { }
 
-    async getFactures(): Promise<Facture[]> {
-        return await this.factureRepository.find();
+    async getFactures(date: string, commercial: number, doctor: number): Promise<Facture[]> {
+
+        if(commercial == -1 && doctor == -1){ 
+            return await this.factureRepository.find({
+                where : [{date : Like(`%${date}%`)}],
+                relations: ['commercialId', 'doctor', 'orders']
+            });
+        }else{
+            if(commercial != -1){
+                return await this.factureRepository.find({
+                    where : [{date : Like(`%${date}%`), doctor : doctor}],
+                    relations: ['commercialId', 'doctor', 'orders']
+                });
+            }
+            if(doctor != -1){
+                return await this.factureRepository.find({
+                    where : [{date : Like(`%${date}%`), commercialId : commercial}],
+                    relations: ['commercialId', 'doctor', 'orders'],
+                });
+            }
+        }
+
     }
 
     async getFactureById(id: number): Promise<Facture> {
         // tslint:disable-next-line: no-shadowed-variable
         const Facture: Facture | undefined = await this.factureRepository.findOne({
-            where: [{ id }]
+            where: [{ id }],
+            relations: ['commercialId', 'doctor', 'orders']
         });
 
         if (!Facture) {
@@ -27,7 +48,8 @@ export class FactureService {
 
     async getFacturesFromDoctor(id:number): Promise<Facture[]>{
         return this.factureRepository.find({
-            where : [{doctor : id}]
+            where : [{doctor : id}],
+            relations: ['commercialId', 'orders']
         });
     }
 

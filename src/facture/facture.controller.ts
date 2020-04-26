@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, ParseIntPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Request, UseGuards, ParseIntPipe, Query } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiImplicitBody, ApiImplicitParam, ApiResponse, ApiUseTags } from '@nestjs/swagger';
+import { ApiImplicitBody, ApiImplicitParam, ApiResponse, ApiUseTags, ApiImplicitQuery } from '@nestjs/swagger';
 import { Facture } from './facture.entity';
 import { FactureService } from './facture.service';
 import { FactureDto } from './model/facture.dto';
@@ -22,10 +22,17 @@ export class FactureController {
                  private readonly updateFactureDtoConverter: updateFactureDtoConverter) {}
 
     @Get('')
+    @ApiImplicitQuery({ name: 'date', type: String, description: 'Date to retrieve' })
+    @ApiImplicitQuery({ name: 'commercial', type: Number, description: 'Commercial to retrieve' })
+    @ApiImplicitQuery({ name: 'doctor', type: Number, description: 'Doctor to retrieve' })
     @ApiResponse({ status: 201, description: 'All factures', type: FactureDto, isArray: true})
     @ApiResponse({ status: 401, description: 'Error!'})
-    async getAll(): Promise<FactureDto[]> {
-        const facture: Facture[] = await this.service.getFactures();
+    async getAll(
+        @Query('date') date: string,
+        @Query('commercial') commercial: number,
+        @Query('doctor') doctor: number,
+    ): Promise<FactureDto[]> {
+        const facture: Facture[] = await this.service.getFactures(date, commercial, doctor);
         return this.FactureDtoConverter.convertOutboundCollection(facture);
     }
 

@@ -1,6 +1,7 @@
 import { IsNumber, IsString, IsBoolean, IsJSON } from 'class-validator';
 import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../user/user.entity';
+import { Order } from 'src/order/order.entity';
 @Entity()
 
 // tslint:disable-next-line: class-name
@@ -18,8 +19,8 @@ export class Facture {
     @JoinColumn()
     doctor: number;
 
-    @Column({ type: Number })
-    @IsNumber()
+    @ManyToOne(() => Order, (order) => order.id)
+    @JoinColumn()
     orders: number;
 
     @Column({ type: String })

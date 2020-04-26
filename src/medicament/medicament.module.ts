@@ -8,6 +8,7 @@ import { createMedicamentDtoConverter } from './converter/createMedicamentDto.co
 import { CommonModule } from './../common/common.module';
 import { UpdateMedicamentDtoConverter } from './converter/updateMedicamentDto.converter';
 import { UpdateMedicamentDto } from './model/updateMedicament.dto';
+import { CategorieDtoConverter } from './converter/categorieDto.converter';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { UpdateMedicamentDto } from './model/updateMedicament.dto';
     MedicamentService,
     MedicamentDtoConverter,
     createMedicamentDtoConverter,
-    UpdateMedicamentDtoConverter
+    UpdateMedicamentDtoConverter,
+    CategorieDtoConverter
 ],
 exports: [
     MedicamentService,

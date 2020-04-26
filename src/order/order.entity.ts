@@ -9,11 +9,31 @@ export class Order {
     @IsNumber()
     id: number;
 
-    @ManyToMany(() => Medicament, (medicament) => medicament.id)
-    @JoinColumn()
-    medicine:number;
+    @Column({ type: Number })
+    @IsNumber()
+    medicineNumber:number;
+
+    @Column({ type: String })
+    @IsString()
+    medicineName = '';
+
+    @Column({ type: String })
+    @IsString()
+    medicineImg = '';
 
     @Column({ type: Number })
+    @IsNumber()
+    medicinePrice:number;
+
+    @Column({ type: String })
     @IsString()
+    medicineCategorie = '';
+
+    @Column({ type: Number })
+    @IsNumber()
+    userOrder:number;
+
+    @Column({ type: Number })
+    @IsNumber()
     quantity:number;
 }

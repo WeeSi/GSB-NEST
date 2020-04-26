@@ -66,6 +66,15 @@ export class UserController {
     }
 
     @UseGuards(AuthGuard('auth'))
+    @Get('select/commercials')
+    @ApiResponse({ status: 201, description: 'commercials found', type: UserDto, isArray: true})
+    @ApiResponse({ status: 401, description: 'User not authentificated'})
+    async selectCommercials(): Promise<UserDto[]> {
+        const commercials: User[] = await this.service.selectCommercials();
+        return this.userDtoConverter.convertOutboundCollection(commercials);
+    }
+
+    @UseGuards(AuthGuard('auth'))
     @Get('doctors')
     @ApiResponse({ status: 201, description: 'Doctors found', type: UserDto, isArray: true})
     @ApiResponse({ status: 401, description: 'User not authentificated'})

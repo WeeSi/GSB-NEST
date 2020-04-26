@@ -15,7 +15,7 @@ export class OrderSerivce {
 
     async getUserOrder(userId : number):Promise <Order[]>{
         return this.orderRepository.find({
-            where : [{id : userId}]
+            where : [{userOrder : userId}]
         });
     }
 }

@@ -9,11 +9,14 @@ export class CreateOrderDtoConverter implements Converter<CreatOrderDto, Partial
     constructor() {}
 
     convertInbound(order: CreatOrderDto): Partial<Order> {
-        const OorderToCreate = {
-                medicine : order.medicine,
+       return {
+                medicineNumber : order.medicineNumber,
+                medicinePrice : order.medicinePrice,
+                medicineName : order.medicineName,
+                medicineImg : order.medicineImg,
+                medicineCategorie : order.medicineCategorie,
+                userOrder : order.userOrder,
                 quantity : order.quantity
         }
-
-        return OorderToCreate;
     }
 }

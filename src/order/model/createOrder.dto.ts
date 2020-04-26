@@ -5,7 +5,27 @@ export class CreatOrderDto {
 
     @ApiModelProperty()
     @IsNumber()
-    medicine:number;
+    medicineNumber:number;
+
+    @ApiModelProperty()
+    @IsString()
+    medicineName:string;
+
+    @ApiModelProperty()
+    @IsString()
+    medicineImg:string;
+
+    @ApiModelProperty()
+    @IsNumber()
+    medicinePrice:number;
+
+    @ApiModelProperty()
+    @IsString()
+    medicineCategorie:string;
+
+    @ApiModelProperty()
+    @IsNumber()
+    userOrder:number;
 
     @ApiModelProperty()
     @IsNumber()

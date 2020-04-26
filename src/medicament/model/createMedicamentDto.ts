@@ -25,6 +25,6 @@ export class CreateMedicamentDto {
 
     @ApiModelProperty()
     @IsNumber()
-    commercial: number;
+    commercialID: number;
 
 }

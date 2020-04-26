@@ -11,6 +11,8 @@ import { PaginatedDtoConverter } from './../common/paginated.converter';
 import { PaginatedDto } from './../common/dto/paginated.dto';
 import { UpdateMedicamentDto } from './model/updateMedicament.dto';
 import { UpdateMedicamentDtoConverter } from './converter/updateMedicamentDto.converter';
+import { CategorieDto } from './model/categorie.dto';
+import { CategorieDtoConverter } from './converter/categorieDto.converter';
 
 @ApiUseTags('medicaments')
 @Controller('medicaments')
@@ -24,22 +26,36 @@ export class MedicamentController {
 
                  private readonly updateMedicamentDtoConverter:UpdateMedicamentDtoConverter,
 
-                 private readonly PaginatedDtoConverter : PaginatedDtoConverter) {}
+                 private readonly PaginatedDtoConverter : PaginatedDtoConverter,
+                 
+                 private readonly categorieDtoConverter : CategorieDtoConverter) {}
 
     @Get('')
     @ApiImplicitQuery({name :'pageIndex', type: Number, description : 'Page index for pagination'})
     @ApiImplicitQuery({name :'pageSize', type: Number, description : 'Page size for pagination'})
     @ApiImplicitQuery({name :'search', type: String, description : 'Page index for pagination'})
+    @ApiImplicitQuery({name :'categorie', type: String, description : 'Categorie of medicine'})
+    @ApiImplicitQuery({name :'commercial', type: Number, description : 'Commercial of medicine'})
     @ApiResponse({ status: 201, description: 'All medicaments', type: PaginatedDto})
     @ApiResponse({ status: 401, description: 'User not authentificated'})
     async getAll(
         @Query('pageIndex', new ParseIntPipe()) pageIndex: number,
         @Query('pageSize', new ParseIntPipe()) pageSize: number,
-        @Query('search') search: string 
+        @Query('search') search: string,
+        @Query('categorie') categorie: string,
+        @Query('commercial', new ParseIntPipe()) commercial: number,
     ): Promise<PaginatedDto<MedicamentDto[]>> {
-        const [medicaments, nbMedicaments] = await this.service.getMedicaments(pageIndex,pageSize,search);
+        const [medicaments, nbMedicaments] = await this.service.getMedicaments(pageIndex,pageSize,search, categorie, commercial);
         const medicamentDto: MedicamentDto[] = this.MedicamentDtoConverter.convertOutboundCollection(medicaments);
         return this.PaginatedDtoConverter.convertOutbound([medicamentDto, nbMedicaments]);
+    }
+
+    @Get('categories')
+    @ApiResponse({ status: 201, description: 'All categories', type: CategorieDto})
+    @ApiResponse({ status: 401, description: 'User not authentificated'})
+    async getCategories(): Promise<CategorieDto[]> {
+        const categories : Medicament[] = await this.service.getCategories();
+        return this.categorieDtoConverter.convertOutboundCollection(categories);
     }
 
     @UseGuards(AuthGuard('auth'))
@@ -56,14 +72,21 @@ export class MedicamentController {
     @UseGuards(AuthGuard('auth'))
     @Get('/com/:id')
     @ApiImplicitParam({name: 'id', description: 'User id to retrieve', required: true, type: Number})
+    @ApiImplicitQuery({name :'medicineName', type: String, description : 'Medicine Name'})
+    @ApiImplicitQuery({name :'medicineCategorie', type: String, description : 'Medicine Categorie'})
     @ApiResponse({ status: 201, description: 'User found', type: MedicamentDto})
     @ApiResponse({ status: 401, description: 'User not authentificated'})
     @ApiResponse({ status: 404, description: 'User not found'})
-    async getComMedicines(@Param('id', new ParseIntPipe()) id: number): Promise<MedicamentDto[]> {
-        const medicaments: Medicament[] = await this.service.getMedicamentsByIdCom(id);
+    async getComMedicines(
+        @Param('id', new ParseIntPipe()) id: number,
+        @Query('medicineName') medicineName: string,
+        @Query('medicineCategorie') medicineCategorie: string,
+        ): Promise<MedicamentDto[]> {
+        const medicaments: Medicament[] = await this.service.getMedicamentsByIdCom(id, medicineName, medicineCategorie);
         return this.MedicamentDtoConverter.convertOutboundCollection(medicaments);
     }
 
+    @UseGuards(AuthGuard('auth'))
     @Put()
     @ApiImplicitBody({name: 'CreateMedicamentDto', description: 'User to create', type: CreateMedicamentDto})
     @ApiResponse({ status: 201, description: 'User found', type: MedicamentDto})

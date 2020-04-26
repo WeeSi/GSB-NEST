@@ -9,6 +9,7 @@ import { RoleEnum } from '../common/role.enum';
 @Injectable()
 export class UserService {
 
+
     constructor(@InjectRepository(User) private usersRepository: Repository<User>) { }
 
     async getUsers(name:string,lastname:string,email:string,role:number): Promise<User[]> {
@@ -85,8 +86,15 @@ export class UserService {
     }
 
     async updateMe(id: number, user: Partial<User>): Promise<User> {
+
+        const user_password= (await this.getUserById(id)).password;
+
         if (!!user.password) {
             user.password = await bcrypt.hash(user.password, 10);
+        }
+
+        if(user_password != user.password){
+            throw new NotFoundException('Mauvais mot de passe');
         }
 
         const result: UpdateResult = await this.usersRepository.update(id, user);
@@ -122,6 +130,12 @@ export class UserService {
     async getDoctors(): Promise<User[]> {
         return await this.usersRepository.find({
             where: [{ role: RoleEnum.Doctor }],
+        });
+    }
+
+    async selectCommercials(): Promise<User[]> {
+        return await this.usersRepository.find({
+            where: [{ role: RoleEnum.Commercial }],
         });
     }
 

@@ -2,8 +2,8 @@ import { MeetingDtoConverter } from './converter/meetingDto.converter';
 import { CreateMeetingDtoConverter } from './converter/createMeetingDto.converter';
 import { Meeting } from './meeting.entity';
 import { CreateMeetingDto } from './model/createMeeting.dto';
-import { ApiImplicitBody, ApiResponse, ApiUseTags, ApiImplicitParam } from '@nestjs/swagger';
-import { Controller, Put, Body, Post, Param, ParseIntPipe, Get } from '@nestjs/common';
+import { ApiImplicitBody, ApiResponse, ApiUseTags, ApiImplicitParam, ApiImplicitQuery } from '@nestjs/swagger';
+import { Controller, Put, Body, Post, Param, ParseIntPipe, Get, Query } from '@nestjs/common';
 import { MeetingDto } from './model/meeting.dto';
 import { MeetingService } from './meeting.service';
 import { HoursDtoConverter } from './converter/hoursDto.converter';
@@ -23,8 +23,18 @@ export class MeetingController {
     @Get(':id')
     @ApiResponse({ status: 201, description: 'User meetings', type: MeetingDto, isArray: true})
     @ApiResponse({ status: 401, description: 'User not authentificated'})
-    async meetings(@Param('id', ParseIntPipe) userId: number): Promise<MeetingDto[]> {
-        const userMeetings: Meeting[] = await this.meetingsService.getUserMeetings(userId);
+    @ApiImplicitQuery({ name: 'date', type: String, description: 'date to retrieve' })
+    @ApiImplicitQuery({ name: 'commercial', type: Number, description: 'commercial to retrieve' })
+    @ApiImplicitQuery({ name: 'doctor', type: Number, description: 'doctor to retrieve' })
+    @ApiImplicitQuery({ name: 'state', type: Number, description: 'state to retrieve' })
+    async meetings(
+        @Param('id', ParseIntPipe) userId: number,
+        @Query('date') date: string,
+        @Query('commercial') commercial: number,
+        @Query('doctor') doctor: number,
+        @Query('state') state: number,
+        ): Promise<MeetingDto[]> {
+        const userMeetings: Meeting[] = await this.meetingsService.getUserMeetings(userId, date, commercial, doctor, state);
         return this.meetingDtoConverter.convertOutboundCollection(userMeetings);
     }
 

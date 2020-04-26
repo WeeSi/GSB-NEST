@@ -47,5 +47,4 @@ export class User {
     @JoinTable({name: 'medicineIds', joinColumn: {name: 'id'}})
     @Column({type: 'json'})
     medicines ?: Medicament[];
-
 }

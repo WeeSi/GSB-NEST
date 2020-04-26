@@ -25,6 +25,10 @@ export class MedicamentDto {
 
     @ApiModelProperty()
     @IsNumber()
+    commercialID: number;
+
+    @ApiModelProperty()
+    @IsNumber()
     prix: number;
 
 }

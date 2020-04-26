@@ -27,6 +27,10 @@ export class Medicament {
 
     @Column({type: Number})
     @IsNumber()
+    commercialID:number;
+
+    @Column({type: Number})
+    @IsNumber()
     prix:number;
 
 }

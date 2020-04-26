@@ -1,6 +1,5 @@
 import { ApiModelProperty } from '@nestjs/swagger';
-import { IsNumber, IsString, IsJSON} from 'class-validator';
-import { MedicamentDto } from 'src/medicament/model/medicament.dto';
+import { IsNumber, IsString} from 'class-validator';
 
 export class OrderDto {
 
@@ -8,9 +7,29 @@ export class OrderDto {
     @IsNumber()
     id: number;
 
-    @ApiModelProperty({type: MedicamentDto})
-    @IsJSON()
-    medicine: Partial<MedicamentDto>;
+    @ApiModelProperty()
+    @IsNumber()
+    medicineNumber:number;
+
+    @ApiModelProperty()
+    @IsString()
+    medicineName:string;
+
+    @ApiModelProperty()
+    @IsString()
+    medicineImg:string;
+
+    @ApiModelProperty()
+    @IsNumber()
+    medicinePrice:number;
+
+    @ApiModelProperty()
+    @IsString()
+    medicineCategorie:string;
+
+    @ApiModelProperty()
+    @IsNumber()
+    userOrder:number;
 
     @ApiModelProperty()
     @IsNumber()

@@ -12,7 +12,12 @@ export class OrderDtoConverter implements Converter<OrderDto, Order> {
         return {
             id : order.id,
             quantity : order.quantity,
-            medicine : order.medicine.id
+            medicineCategorie : order.medicineCategorie,
+            medicineImg : order.medicineImg,
+            medicineName : order.medicineName,
+            medicineNumber : order.medicineNumber,
+            medicinePrice : order.medicinePrice,
+            userOrder : order.userOrder
         };
     }
 
@@ -20,7 +25,12 @@ export class OrderDtoConverter implements Converter<OrderDto, Order> {
         return {
             id : order.id,
             quantity : order.quantity,
-            medicine : order.medicine as Partial<Medicament>
+            medicineCategorie : order.medicineCategorie,
+            medicineImg : order.medicineImg,
+            medicineName : order.medicineName,
+            medicineNumber : order.medicineNumber,
+            medicinePrice : order.medicinePrice,
+            userOrder : order.userOrder
         };
     }
 

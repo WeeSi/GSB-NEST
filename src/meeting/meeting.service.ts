@@ -1,7 +1,7 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { Meeting } from './meeting.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, Like, In } from 'typeorm';
 import { MeetingState } from './model/state.enum';
 
 @Injectable()
@@ -32,18 +32,69 @@ export class MeetingService {
         });
     }
 
-    async getUserMeetings(userId: number): Promise<Meeting[]> {
-        return this.meetingsRepository.find({
-            where: [
-                { attendee: userId },
-                { organizer: userId },
-            ],
-            relations: ['attendee', 'organizer'],
-            order: {
-                date: 'DESC',
-                state: 'DESC',
-            },
-        });
+    async getUserMeetings(userId: number, date: string, commercial: number, doctor: number, state: number): Promise<Meeting[]> {
+
+        var queryMeetingState;
+        if(state == -1){
+            queryMeetingState = In([0,1,2]);
+        }else{
+            queryMeetingState = state;
+        }
+       
+        if(commercial == -1 && doctor == -1){
+            return this.meetingsRepository.find({
+                where: [
+                    { attendee: userId, date :  Like(`%${date}%`), state :queryMeetingState},
+                    { organizer: userId, date : Like(`%${date}%`), state :queryMeetingState},
+                ],
+                relations: ['attendee', 'organizer'],
+                order: {
+                    date: 'DESC',
+                    state: 'DESC',
+                },
+            });
+        }else{
+            if(commercial != -1 && doctor != -1){
+                return this.meetingsRepository.find({
+                    where: [
+                        { attendee: userId, date :  Like(`%${date}%`),organizer : commercial, state :queryMeetingState},
+                        { organizer: userId, date : Like(`%${date}%`), attendee : doctor, state : queryMeetingState},
+                    ],
+                    relations: ['attendee', 'organizer'],
+                    order: {
+                        date: 'DESC',
+                        state: 'DESC',
+                    },
+                });
+            }else{
+                if(commercial == -1){
+                    return this.meetingsRepository.find({
+                        where: [
+                            { attendee: userId, date :  Like(`%${date}%`), state :queryMeetingState},
+                            { organizer: userId, date : Like(`%${date}%`), attendee : doctor, state : queryMeetingState},
+                        ],
+                        relations: ['attendee', 'organizer'],
+                        order: {
+                            date: 'DESC',
+                            state: 'DESC',
+                        },
+                    });
+                }
+                if(doctor == -1){
+                    return this.meetingsRepository.find({
+                        where: [
+                            { attendee: userId, date :  Like(`%${date}%`),organizer : commercial, state :queryMeetingState},
+                            { organizer: userId, date : Like(`%${date}%`), state : queryMeetingState},
+                        ],
+                        relations: ['attendee', 'organizer'],
+                        order: {
+                            date: 'DESC',
+                            state: 'DESC',
+                        },
+                    });
+                }
+            }
+        }
     }
 
     async getHours(date: string, userId:number): Promise<Meeting[]> {
