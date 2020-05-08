@@ -20,10 +20,10 @@ export class ConfigService {
     private _dbName = '';
 
     // tslint:disable-next-line: variable-name
-    private _dbUserName = 'root';
+    private _dbUserName = '';
 
     // tslint:disable-next-line: variable-name
-    private _dbPassword = 'test';
+    private _dbPassword = '';
 
     // tslint:disable-next-line: variable-name
     private _dbPort = 3306;
@@ -41,7 +41,7 @@ export class ConfigService {
     private _webProtocol = '';
    
     // tslint:disable-next-line: variable-name
-    private _nodeEnv = 'dev';
+    private _nodeEnv = '';
 
     // tslint:disable-next-line: variable-name
     private _isProd = false;

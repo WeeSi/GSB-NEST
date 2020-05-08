@@ -1,5 +1,5 @@
-import { IsNumber, IsString, IsBoolean, IsJSON } from 'class-validator';
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { IsNumber, IsString } from 'class-validator';
+import { Column, Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { User } from '../user/user.entity';
 import { Order } from 'src/order/order.entity';
 @Entity()
