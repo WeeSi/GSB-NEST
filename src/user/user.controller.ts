@@ -8,7 +8,7 @@ import { UserService } from './user.service';
 import { CreateUserDtoConverter } from './converter/createUserDto.converter';
 import { CreateUserDto } from './model/createUser.dto';
 import { UpdateUserDtoConverter } from './converter/updateUserDto.converter';
-import { UpdateUserDto } from './model/updateUser.Dto';
+import { UpdateUserDto } from './model/updateUser.dto';
 
 @ApiUseTags('user')
 @Controller('user')
