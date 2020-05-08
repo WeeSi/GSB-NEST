@@ -14,7 +14,7 @@ import { OrderModule } from './order/order.module';
 
 const typeOrmConfig: MysqlConnectionOptions = {
       type: 'mysql',
-      host: "test",
+      host: "eu-cdbr-west-03.cleardb.net",
       port: 3306,
       username: "b5973763f377d3",
       password: "cb194ff5",
