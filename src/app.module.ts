@@ -14,11 +14,11 @@ import { OrderModule } from './order/order.module';
 
 const typeOrmConfig: MysqlConnectionOptions = {
       type: 'mysql',
-      host: "eu-cdbr-west-03.cleardb.net",
+      host: configService.dbHost,
       port: configService.dbPort,
-      username: "b5973763f377d3",
-      password: "cb194ff5",
-      database: "gsbProd",
+      username: configService.dbUserName,
+      password: configService.dbPassword,
+      database: configService.dbName,
       entities: ['src/**/**.entity{.ts,.js}'],
       logging: true,
       synchronize: !configService.isProd,
