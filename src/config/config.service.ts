@@ -65,7 +65,7 @@ export class ConfigService {
         this.webHostName = process.env.WEB_HOST_NAME;
         this.webProtocol = process.env.WEB_PROTOCOL;
         this.nodeEnv = process.env.NODE_ENV;
-        this.isProd = this.nodeEnv === 'production';
+        this.isProd = this.nodeEnv === 'prod';
     }
 
     public get apiBasePath() {
